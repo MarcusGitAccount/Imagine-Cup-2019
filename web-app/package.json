@@ -1,0 +1,32 @@
+{
+  "name": "imagine-cup-2019",
+  "version": "1.0.0",
+  "description": "Upper implementation for IC-2019.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcusGitAccount/Imagine-Cup-2019.git"
+  },
+  "keywords": [
+    "Imagine-Cup",
+    "Upper",
+    "Azure"
+  ],
+  "authors": "Marcus Pop; Andrei Gatea",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MarcusGitAccount/Imagine-Cup-2019/issues"
+  },
+  "homepage": "https://github.com/MarcusGitAccount/Imagine-Cup-2019#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "ws": "^6.1.2"
+  }
+}
