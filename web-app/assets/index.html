@@ -10,5 +10,15 @@
 <body>
   <img src="images/obi-hello.jpg" alt="Uhm, some image I guess.">
   <h1>Nice to see you here on Azure too.</h1>
+  <br>
+  <p id="data"></p>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io.connect(window.location.origin);
+
+    socket.on('datastream', data => {
+      document.querySelector('p#data').innerHTML = JSON.stringify(data);
+    });
+  </script>
 </body>
 </html>
