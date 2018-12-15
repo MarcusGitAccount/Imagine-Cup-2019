@@ -12,6 +12,11 @@ const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
+console.log(process.env.NODE_ENV);
+console.log(process.env.PORT);
+console.log(process.env.EVENTHUB_CONN_STRING);
+console.log(process.env.EVENTHUB_NAME);
+
 if (process.env.NODE_ENV != undefined && 
     process.env.NODE_ENV == 'dev') {
   app.use(morgan('dev'));
