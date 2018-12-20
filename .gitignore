@@ -2,3 +2,5 @@ web-app/node_modules
 misc.txt
 .env
 .vscode
+web-app/assets/js/libs
+web-app/db/config.json

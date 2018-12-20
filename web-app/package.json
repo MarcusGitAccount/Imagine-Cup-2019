@@ -24,11 +24,23 @@
   "homepage": "https://github.com/MarcusGitAccount/Imagine-Cup-2019#readme",
   "dependencies": {
     "@azure/event-hubs": "^1.0.7",
+    "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
+    "chart.js": "^2.7.3",
+    "chartjs-plugin-streaming": "^1.7.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
     "dotenv": "^6.2.0",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "express-ejs-layouts": "^2.5.0",
+    "express-session": "^1.15.6",
     "morgan": "^1.9.1",
+    "mssql": "^4.3.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "socket.io": "^2.2.0",
+    "uuid": "^3.3.2",
     "ws": "^6.1.2"
   }
 }

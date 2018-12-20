@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="styles/index.css">
+  <title>Charts</title>
+  <style>
+    #chart {
+      max-height: 50vh;
+      max-width: 50wh;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <canvas id="chart" width="1000" height="400">
+      <p>Your browser doesn't support the canvas element and its functionality.</p>
+    </canvas>
+  </div>
+
+  <script src="js/libs/chart.bundle.min.js"></script>
+  <script src="js/libs/moment.min.js"></script>
+  <script src="js/libs/chartjs-plugin-streaming.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const ctx = document.querySelector("#chart").getContext('2d');
+    const config = {
+      type: 'line',
+      data: {
+        labels: [0],
+        datasets: [{
+          label: 'Heartrate',
+          backgroundColor: '#ffffff',
+          borderColor: '#ff0000',
+          fill: false,
+          cubicInterpolationMode: 'monotone',
+          borderDash: [8, 4],
+          data: [0]
+        }]
+      }
+    };
+    const chart = new Chart(ctx, config);
+    const socket = io.connect(window.location.origin);
+
+    socket.on('chart-data', data => {     
+      if (chart) {
+        const preservation = true;
+        const x = moment().format('HH:mm:ss');
+        const y = data;
+        
+        if (chart.data.labels.length >= 10) {
+          chart.data.labels.shift();
+          chart.data.datasets[0].data.shift();
+        }
+
+        chart.data.datasets[0].data.push(y);
+        chart.data.labels.push(x);
+        chart.update();
+      }
+    });
+</script>
+</body>
+</html>
