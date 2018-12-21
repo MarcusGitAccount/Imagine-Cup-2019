@@ -2,3 +2,13 @@
   padding: 0;
   margin: 0;
 }
+
+.error {
+  font-weight: bold;
+  color: red;
+}
+
+.notification {
+  font-weight: bold;
+  color: aqua;
+}

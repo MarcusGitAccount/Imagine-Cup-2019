@@ -4,10 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><%= title %></title>
+  <title>Index</title>
+  <link rel="stylesheet" href="/assets/styles/index.css">
 </head>
 <body>
-  <h1>Oh hi</h1>
+  <% let messages = null %>
+  <% if (locals.getMessages) { %>
+  <%  messages = getMessages() %>
+  <% } %>
+
+  <% if (messages && messages.error && Array.isArray(messages.error)) { %>
+    <% for (const type in messages) { %>
+      <% for (const message of messages[type]) { %>
+        <p class=<%- type %>><%- message %></p>
+      <% } %> 
+    <% } %>
+  <% } %>  
   <a href="/auth">Authentication</a>
   <a href="/app">Application</a>
 </body>
