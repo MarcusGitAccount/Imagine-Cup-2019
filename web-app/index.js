@@ -23,11 +23,16 @@ const db = new DbModel();
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const constants = require('./constants');
+
 // APP CONFIGURATION
 
 const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated())
-    return next;
+  console.log(req.isAuthenticated)
+  if (req.isAuthenticated()) {
+    res.locals.user = req.user;
+    return next();
+  }
   req.flash('auth-error', 'You need to be logged in.');
   return res.status(403).redirect('auth');
 }
@@ -55,8 +60,7 @@ passport.use(new LocalStrategy(
           return done(null, false, request.flash('auth-error', 'Username not found.'));
         
         user = result.recordset[0];
-        match = await bcrypt.compare(user.password, password);
-        return {user, match};
+        return {user: user, match: await bcrypt.compare(password, user.password)};
       })
       .then(data => { 
         if (!data)
@@ -73,7 +77,7 @@ passport.use(new LocalStrategy(
 ));
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.user_id);
 });
 
 passport.deserializeUser((id, done) => {
@@ -86,7 +90,8 @@ passport.deserializeUser((id, done) => {
       `;
     })
     .then(result => {
-      if (!result || !Array.isArray(result) || result.length != 1)
+      if (!result || !result.recordset || 
+        !Array.isArray(result.recordset) || result.recordset.length != 1)
         return Promise.reject('Error while deserializing current user.');
       return done(null, result.recordset[0]);
     })
@@ -103,17 +108,18 @@ app.use(passport.session());
 app.use(parser.urlencoded({ 'extended': true}));
 app.use(parser.json());
 app.use('assets', express.static(path.join(__dirname, 'assets')));
-app.use(cookieParser('kitty'));
+app.use(cookieParser());
+app.use(flash());
 app.use(session({
   cookie: {
     maxAge: 60000
   },
-  genid: _ => uuid(),
   secret: process.env.SESSION_SECRET || 'Partidul n-a murit.',
   resave: false,
   saveUninitialized: true
 }));
-app.use(flash());
+
+// APP ROUTING
 
 app.get('/', (req, res) => {
   res.status(200).render('index', {
@@ -133,14 +139,55 @@ app.post('/auth/login', passport.authenticate('local', {
   })
 );
 
-app.post('/auth/signup', (req, res) => {
+app.post('/auth/register', (req, res) => {
+  const username = req.body.username.trim();
+  const password = req.body.password.trim();
+  const password_repeat = req.body.password_repeat.trim();
 
+  if (password != password_repeat) {
+    req.flash('auth-error', 'Registration: passwords do not match.');
+    return res.redirect('/auth');
+  }
+
+  db.connect()
+    .then(() => {
+      return db.sql.query`
+        select *
+        from users
+        where name = ${username}
+      `;
+    })
+    .then(result => {
+      if (!(!result || !result.recordset || !Array.isArray(result.recordset))) {
+        if (result.recordset.length > 0) {
+          req.flash('auth-error', 'Registration: Username alredy taken.');
+          return Promise.reject('Lorem');
+        }
+      }
+      return true;
+    })
+    .then(async (_) => {
+      return await bcrypt.hash(password, constants.saltRounds);
+    })
+    .then(hash => {
+      return db.sql.query`
+        insert into users(name, password)
+        values(${username}, ${hash})`;
+    })
+    .then(result => {
+      if (!result || !result.rowsAffected.length != 1)
+        return Promise.reject('Lorem error');
+      res.redirect('/app');
+    })
+    .catch(_ => {
+      req.flash('auth-error', 'Error occured during registration.');
+      res.redirect('/auth');
+    })
 });
 
 app.post('/auth/logout', (req, res) => {
   req.logout();
   res.redirect('/');
-
 });
 
 app.get('/app', isAuthenticated, (req, res) => {
