@@ -1,0 +1,1 @@
+Generating test data for the stream analytics job in Azure.

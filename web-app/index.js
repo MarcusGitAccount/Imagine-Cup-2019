@@ -53,6 +53,7 @@ if (process.env.NODE_ENV != undefined &&
 }
 
 require('./routes/auth')(app, db, bcrypt);
+require('./iot-hub/IOTHubDataStream')(io);
 
 app.get('/app', isAuthenticated, (req, res) => {
   res.status(200).render('app', {user: req.session.user});

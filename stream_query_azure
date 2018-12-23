@@ -1,0 +1,14 @@
+with DataSelection as (
+    select
+        session_id, child_id, comment,
+        avg(pulse) as pulse,
+        max(cast(data_time as datetime)) as data_time
+    from
+        [RaspPiData]
+    group by
+        session_id, child_id, comment,
+        SlidingWindow(second, 15)
+)
+
+select * into [IotDataToDBUpper] from DataSelection;
+select * into [IotDataToWebApp]  from DataSelection;
