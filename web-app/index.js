@@ -21,6 +21,9 @@ const DbModel = require('./db/DatabaseModel');
 const db = new DbModel();
 
 const constants = require('./constants');
+const EventHubClient = require('./iot-hub/IOTHubDataStream')();
+const { EventPosition } = require('@azure/event-hubs');
+
 
 // APP CONFIGURATION
 app.set('case sensivitive routing', false);
@@ -47,13 +50,15 @@ const isAuthenticated = (req, res, next) => {
   return res.status(403).redirect('auth');
 }
 
+const getPartitions = async (client) => {
+  return await client.getPartitionIds(); 
+}
+
 if (process.env.NODE_ENV != undefined && 
   process.env.NODE_ENV == 'dev') {
   app.use(morgan('dev'));
 }
-
 require('./routes/auth')(app, db, bcrypt);
-require('./iot-hub/IOTHubDataStream')(io);
 
 app.get('/app', isAuthenticated, (req, res) => {
   res.status(200).render('app', {user: req.session.user});
@@ -70,3 +75,31 @@ app.get('*', (req, res) => {
 server.listen(process.env.PORT || 1337, () => {
   console.log(`Application running on port: ${server.address().port}`);
 });
+
+
+getPartitions(EventHubClient)
+  .then(async (partitions) => {
+    const onError = (err) => {
+      const data = null;
+      const error = err;
+
+      io.emit('datastream-pulse', {data, error});
+    };
+    
+    const onMessage = (eventData) => {
+      const data = eventData.body;
+      const error = null;
+
+      io.emit('datastream-pulse', {data, error});
+    };
+  
+    for (const id of partitions) {
+      const receiveHandler = EventHubClient.receive(id, onMessage, onError, { 
+        eventPosition: EventPosition.fromEnqueuedTime(Date.now()) 
+      });
+      await receiveHandler.stop();
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+  });
