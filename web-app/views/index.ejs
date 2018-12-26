@@ -8,19 +8,11 @@
   <link rel="stylesheet" href="/assets/styles/index.css">
 </head>
 <body>
-  <% let messages = null %>
-  <% if (locals.getMessages) { %>
-  <%  messages = getMessages() %>
-  <% } %>
 
-  <% if (messages && messages.error && Array.isArray(messages.error)) { %>
-    <% for (const type in messages) { %>
-      <% for (const message of messages[type]) { %>
-        <p class=<%- type %>><%- message %></p>
-      <% } %> 
-    <% } %>
-  <% } %>  
   <a href="/auth">Authentication</a>
   <a href="/app">Application</a>
+
+  <% include includes/footer %>
+  <% include includes/notifications %>
 </body>
 </html>

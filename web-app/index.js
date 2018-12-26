@@ -24,7 +24,6 @@ const constants = require('./constants');
 const EventHubClient = require('./iot-hub/IOTHubDataStream')();
 const { EventPosition } = require('@azure/event-hubs');
 
-
 // APP CONFIGURATION
 app.set('case sensivitive routing', false);
 app.set('view engine', 'ejs');
@@ -58,15 +57,16 @@ if (process.env.NODE_ENV != undefined &&
   process.env.NODE_ENV == 'dev') {
   app.use(morgan('dev'));
 }
+
+// APP ROUTING
+app.get('/', (req, res) => {    
+  res.locals.title = 'Effing title';
+  return res.status(200).render('index');
+});
+
 require('./routes/auth')(app, db, bcrypt);
+require('./routes/app')(app, db, io, isAuthenticated);
 
-app.get('/app', isAuthenticated, (req, res) => {
-  res.status(200).render('app', {user: req.session.user});
-});
-
-app.get('/chart', (req, res) => {
-  res.status(200).sendfile(path.join(__dirname, 'assets', 'charts.html'));
-});
 
 app.get('*', (req, res) => {
   res.status(404).render('404');

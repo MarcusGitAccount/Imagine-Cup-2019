@@ -29,14 +29,10 @@ module.exports = (app, db, bcrypt) => {
       req.flash('error', 'Failed to serialize the current user.');
     });
   });
-    
-  // APP ROUTING
-  app.get('/', (req, res) => {
-    res.locals.title = 'Effing title';
-    res.status(200).render('index');
-  });
 
   app.get('/auth', (req, res) => {
+    if (req.session && req.session.user)
+      return res.redirect('/app');
     res.status(200).render('auth');
   });
   

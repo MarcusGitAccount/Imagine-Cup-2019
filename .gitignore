@@ -4,3 +4,7 @@ misc.txt
 .vscode
 web-app/assets/js/libs
 web-app/db/config.json
+stream analytics job/UpperASA/UpperASA/Outputs/db.json
+stream analytics job/UpperASA/UpperASA/Inputs/iot.json
+stream analytics job/UpperASA/UpperASA/Outputs/event.json
+credits
