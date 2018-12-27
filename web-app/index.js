@@ -46,7 +46,7 @@ const isAuthenticated = (req, res, next) => {
     return next();
   }
   req.flash('error', 'You need to be logged in.');
-  return res.status(403).redirect('auth');
+  return res.status(403).redirect('/auth');
 }
 
 const getPartitions = async (client) => {
@@ -65,8 +65,8 @@ app.get('/', (req, res) => {
 });
 
 require('./routes/auth')(app, db, bcrypt);
+require('./routes/api')(app, isAuthenticated, db, io);
 require('./routes/app')(app, db, io, isAuthenticated);
-
 
 app.get('*', (req, res) => {
   res.status(404).render('404');

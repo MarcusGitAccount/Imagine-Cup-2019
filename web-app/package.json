@@ -24,6 +24,7 @@
   "homepage": "https://github.com/MarcusGitAccount/Imagine-Cup-2019#readme",
   "dependencies": {
     "@azure/event-hubs": "^1.0.8",
+    "azure-iothub": "^1.8.3",
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "chart.js": "^2.7.3",

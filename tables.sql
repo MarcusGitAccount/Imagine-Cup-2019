@@ -35,3 +35,24 @@ create table sessions(
   end_time datetime,
   constraint sessions_pk primary key(session_id)
 );
+
+create table devices(
+  device_id int identity(0, 1) not null,
+  device_name varchar(60)
+
+  constraint devices_pk primary key(device_id)
+);
+
+alter table dbo.children
+add device_id int;
+
+alter table children
+add constraint child_device_fk foreign key(device_id)
+  references devices(device_id);
+
+insert into devices
+values ('Pi_0000')
+
+update children
+set device_id = 0
+where child_id = 0;
