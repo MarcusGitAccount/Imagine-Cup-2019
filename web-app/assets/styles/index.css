@@ -17,3 +17,7 @@
   visibility: hidden;
   display: none;
 }
+
+.working {
+  color: green;
+}

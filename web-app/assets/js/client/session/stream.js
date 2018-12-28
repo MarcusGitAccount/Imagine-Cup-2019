@@ -8,20 +8,30 @@ if (inSession && inSession == "true") {
   document.querySelector('#stop-simulation').classList.remove('hidden');
 }
 
-const socket = io.connect(window.location.origin);
+document.querySelector('#ping-device').addEventListener('click', e => {
+  const select = document.querySelector('select#select-child');
+  
+  if (!select || !select.childElementCount)
+    return handlePromiseErrors('Unable to ping.');
 
-// document.querySelector('#ping-device').addEventListener('click', e => {
-//   fetch('/api/pingdevice')
-//   .then(res => res.json())
-//   .then(res => {
-//     console.log(res);
-//     if (res.error)
-//       window.alert(res.error);
-//     else
-//       window.alert(res.result.payload);
-//   })
-//   .catch(error => window.alert(error));
-// });
+  const {device} = select[select.selectedIndex].dataset;
+
+  fetch('/api/pingdevice', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({device})
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.error)
+        return Promise.reject(res.error);
+      pingStatusPositive();
+    })
+    .catch(error => pingStatusNegative());
+});
 
 
 // TODO save session id and child id received back from the device in localStorage
@@ -32,7 +42,7 @@ document.querySelector('#start-simulation').addEventListener('click', e => {
   if (!select || !text)
     return handlePromiseErrors('Unable to start simulation.');
 
-  const {device, id} = select.selectedOptions[select.selectedIndex].dataset;
+  const {device, id} = select[select.selectedIndex].dataset;
   const name = text.value;
   const body = {
     child_id: id,
@@ -55,7 +65,8 @@ document.querySelector('#start-simulation').addEventListener('click', e => {
     else {
       document.querySelector('#session-controls').classList.add('hidden');
       text.value = '';
-      window.localStorage.setItem('childName', select.selectedOptions[select.selectedIndex].innerHTML);
+      window.localStorage.setItem('device', device);
+      window.localStorage.setItem('childName', select[select.selectedIndex].innerHTML);
       window.localStorage.setItem('name', name);
       window.localStorage.setItem('current', res.result.payload);
       window.localStorage.setItem('inSession', true)
@@ -73,13 +84,16 @@ document.querySelector('#stop-simulation').addEventListener('click', e => {
   if (!JSON.parse(window.localStorage.getItem('current')))
     return handlePromiseErrors('Unable to stop session');
   
+  const body = JSON.parse(window.localStorage.getItem('current'));
+
+  body['device'] = window.localStorage.getItem('device');
   fetch('/api/stopdevice', {
     method: 'POST',
     headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },
-    body: window.localStorage.getItem('current')
+    body: JSON.stringify(body)
   })
   .then(res => res.json())
   .then(res => {
@@ -97,8 +111,5 @@ document.querySelector('#stop-simulation').addEventListener('click', e => {
   .catch(handlePromiseErrors);
 });
 
-socket.on('datastream-pulse', data => {
-  document.querySelector('span#data').innerHTML += `<p>${JSON.stringify(data.data)}</p>`;
-});
-
 init();
+initMiscellaneousEvents();

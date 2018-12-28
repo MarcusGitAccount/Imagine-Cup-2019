@@ -71,3 +71,7 @@ values ('Pi_0000')
 update children
 set device_id = 0
 where child_id = 0;
+
+select datediff(minute, start_time, end_time) as duration
+from sessions
+where session_id = 9;

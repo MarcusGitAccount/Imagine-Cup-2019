@@ -1,11 +1,15 @@
 'use strict';
 
 const deviceControl = require('../iot-hub/ControlDevice')();
-const deviceId = 'Pi_0000';
 
 module.exports = (app, isAuthenticated, db, io) => {
-  app.get('/api/pingdevice', isAuthenticated, (req, res) => {
-    deviceControl.pingDevice(deviceId, (error, result) => {
+  app.post('/api/pingdevice', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.device)
+      return res.json({error: 'Cannot ping device. Invalid POST body.'});
+
+    const device_id = req.body.device.trim();
+
+    deviceControl.pingDevice(device_id, (error, result) => {
       if (error && error.message)
         error = error.message;
       return res.json({error, result});
@@ -41,10 +45,11 @@ module.exports = (app, isAuthenticated, db, io) => {
   });
 
   app.post('/api/stopdevice', isAuthenticated, (req, res) => {
-    if (!req.body || !req.body.session_id)
-      return res.json({error: 'No sessions id received in the post request.'});
+    if (!req.body || !req.body.session_id || !req.body.device)
+      return res.json({error: 'No session/device id received in the post request.'});
 
     const sessionId = req.body.session_id;
+    const device = req.body.device.trim();
 
     db.connect()
       .then(() => {
@@ -55,7 +60,7 @@ module.exports = (app, isAuthenticated, db, io) => {
         `;
       })
       .then(result => {
-        deviceControl.stopDeviceTelemetry(deviceId, (error, result) => {
+        deviceControl.stopDeviceTelemetry(device, (error, result) => {
           if (error && error.message)
             return res.json({error: error.message});
           return res.json({result});    

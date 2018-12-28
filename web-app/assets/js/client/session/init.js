@@ -31,11 +31,38 @@ function init() {
 
 function initMiscellaneousEvents() {
   let select = null;
+  let status = null;
 
   if (!(select = document.querySelector('#select-child')))
     return handlePromiseErrors('Select element doesn\'t exist on the page.');
+  if (!(status = document.querySelector('#session-ping-status')))
+    return handlePromiseErrors('Status element doesn\'t exist on the page.');
 
   select.addEventListener('change', e => {
-
+    status.innerHTML = 'unchecked.';
+    status.classList.remove('working');
+    status.classList.remove('error');
   });
+}
+
+function pingStatusPositive() {
+  let status = null;
+
+  if (!(status = document.querySelector('#session-ping-status')))
+    return handlePromiseErrors('Status element doesn\'t exist on the page.');
+
+  status.innerHTML = 'device connected and working.';
+  status.classList.add('working');
+  status.classList.remove('error');
+}
+
+function pingStatusNegative() {
+  let status = null;
+
+  if (!(status = document.querySelector('#session-ping-status')))
+    return handlePromiseErrors('Status element doesn\'t exist on the page.');
+
+  status.innerHTML = 'device not working.';
+  status.classList.remove('working');
+  status.classList.add('error');
 }
