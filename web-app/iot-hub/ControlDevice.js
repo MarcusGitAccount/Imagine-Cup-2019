@@ -16,9 +16,9 @@ class Controls {
     }
   }
 
-  async pingDevice(device_id) {
+  pingDevice(device_id, cb) {
     if (!this.client)
-      return Promise.reject('Error while creating iot hub client to communicate with the device');
+      return cb('Error while creating iot hub client to communicate with the device', null);
 
     const params = {
       methodName: 'pingDevice',
@@ -26,12 +26,12 @@ class Controls {
       payload: 'ping'
     };
 
-    return this.client.invokeDeviceMethod(device_id, params);
+    this.client.invokeDeviceMethod(device_id, params, cb);
   }
 
-  async startDeviceTelemetry(device_id, child_id = null, session_id = null) {
+  startDeviceTelemetry(device_id, child_id, session_id, cb) {
     if (!this.client)
-      return Promise.reject('Error while creating iot hub client to communicate with the device');
+      return cb('Error while creating iot hub client to communicate with the device', null);
 
     const params = {
       methodName: 'startDeviceTelemetry',
@@ -39,19 +39,19 @@ class Controls {
       responseTimeoutInSeconds: 30
     };
 
-    return this.client.invokeDeviceMethod(device_id, params);
+    this.client.invokeDeviceMethod(device_id, params, cb);
   }
 
-  async stoptDeviceTelemetry(device_id) {
+  stopDeviceTelemetry(device_id, cb) {
     if (!this.client)
-      return Promise.reject('Error while creating iot hub client to communicate with the device');
+      return cb('Error while creating iot hub client to communicate with the device', null);
 
     const params = {
       methodName: 'stoptDeviceTelemetry',
       responseTimeoutInSeconds: 30
     };
 
-    return this.client.invokeDeviceMethod(device_id, params);
+    this.client.invokeDeviceMethod(device_id, params, cb);
   }
 }
 

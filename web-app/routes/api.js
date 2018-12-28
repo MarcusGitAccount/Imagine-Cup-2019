@@ -1,11 +1,117 @@
 'use strict';
 
 const deviceControl = require('../iot-hub/ControlDevice')();
+const deviceId = 'Pi_0000';
 
 module.exports = (app, isAuthenticated, db, io) => {
-  app.get('/api/data', isAuthenticated, (req, res) => {
-    deviceControl.pingDevice()
-      .then(result => res.json({error: null, result}))
-      .catch(error => res.json({result: null, error}));
+  app.get('/api/pingdevice', isAuthenticated, (req, res) => {
+    deviceControl.pingDevice(deviceId, (error, result) => {
+      if (error && error.message)
+        error = error.message;
+      return res.json({error, result});
+    });
+  });
+
+  app.post('/api/startdevice', isAuthenticated, (req, res) => {
+    const device_id = req.body.device.trim();
+    const childId = parseInt(req.body.child_id.trim(), 10);
+    const sessionName = req.body.session_name;
+    const userId = req.session.user.user_id;
+    
+    db.connect()
+    .then(() => {
+        return db.sql.query`
+          insert into sessions(end_time, session_name, user_id)
+          values(null, ${sessionName}, ${userId})
+          select scope_identity();
+      `;
+      })
+      .then(result => {
+        const sessionId = result.recordset[0][""];
+
+        deviceControl.startDeviceTelemetry(device_id, childId, sessionId, (error, result) => {
+          if (error && error.message)
+            return res.json({error: error.message});
+          return res.json({result});
+        });
+      })
+      .catch(error =>  {
+        res.json({error})
+      });
+  });
+
+  app.post('/api/stopdevice', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id)
+      return res.json({error: 'No sessions id received in the post request.'});
+
+    const sessionId = req.body.session_id;
+
+    db.connect()
+      .then(() => {
+        return db.sql.query`
+          update sessions
+          set end_time = getdate()
+          where session_id = ${sessionId};
+        `;
+      })
+      .then(result => {
+        deviceControl.stopDeviceTelemetry(deviceId, (error, result) => {
+          if (error && error.message)
+            return res.json({error: error.message});
+          return res.json({result});    
+        });
+      })
+      .catch(error => res.json({error}));
+  });
+    
+  app.get('/api/children', isAuthenticated, (req, res) => {
+    db.connect()
+    .then(() => {
+      return db.sql.query`
+      select 
+      child_id,
+      concat(first_name, ' ', last_name) as name,
+      device_name as device
+      from
+      children c
+      join
+      devices d
+        on (c.device_id = d.device_id);
+      `;
+    })
+    .then(result => {
+      res.json({data: result.recordset});
+    })
+    .catch(error =>  {
+      res.json({error})
+    });
+  });
+
+  app.get('/api/testinsertion', isAuthenticated, (req, res) => {
+    let name = '';
+    let letters = [];
+    const count = (Math.random() * 100) >> 0;
+
+    for (let i = 0; i < 3 + ((Math.random() * 10) >> 0); i++) {
+      const char = 65 + ((Math.random() * 25) >> 0);
+
+      letters.push(String.fromCharCode(char));
+    }
+
+    name = letters.join('');
+    db.connect()
+      .then(() => {
+        return db.sql.query`
+          insert into dummy(name, type_count)
+          values(${name}, ${count})
+          select scope_identity();
+        `;
+      })
+      .then(result => {
+        res.send(result.recordset[0][""] + ' ' + name + ' ' + count);
+      })
+      .catch(error => {
+        res.send(error);
+      });
   });
 };

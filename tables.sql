@@ -36,6 +36,21 @@ create table sessions(
   constraint sessions_pk primary key(session_id)
 );
 
+alter table sessions
+add user_id int;
+
+alter table sessions
+add constraint sessions_users_fk foreign key(user_id)
+  references users(user_id);
+
+update sessions
+set user_id = (
+  select user_id
+  from users
+  where name = 'marcuspop'
+)
+where session_id = 0;
+
 create table devices(
   device_id int identity(0, 1) not null,
   device_name varchar(60)

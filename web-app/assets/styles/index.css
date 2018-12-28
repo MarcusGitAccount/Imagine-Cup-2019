@@ -12,3 +12,8 @@
   font-weight: bold;
   color: aqua;
 }
+
+.hidden {
+  visibility: hidden;
+  display: none;
+}

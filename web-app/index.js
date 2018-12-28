@@ -76,7 +76,6 @@ server.listen(process.env.PORT || 1337, () => {
   console.log(`Application running on port: ${server.address().port}`);
 });
 
-
 getPartitions(EventHubClient)
   .then(async (partitions) => {
     const onError = (err) => {

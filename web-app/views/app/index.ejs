@@ -4,18 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/assets/styles/index.css">
   <title>Application</title>
 </head>
 <body>
   <% include ../includes/navbar %>
+  <% include ../includes/notifications %>
+  <% include ../includes/greet %>
 
-  <% if (user && user.name) { %>
-  <h1>Hello user: <%- user.name %></h1>
-  <% } %>
+  <span id="errors"></span>
+  <span id="data"></span>
 
-  <button id="start-simulation">Start simulation.</button>
+  <div id="create-session" style="background-color: #e0e0e0">
+    <br>
+    <div id="session-controls">
+      <p>Create a new session</p>
+      <select id="select-child"></select>
+      <input type="text" id="session-name" placeholder="Enter session name">
+      <button id="ping-device" title="Ping child's device to see if it works">Ping device</button> 
+
+      <p>It it recommended to first check if the device is connected. To do this just simply ping it.</p>
+      
+    </div>
+
+    <button id="start-simulation">Start simulation.</button>
+    <button id="stop-simulation" class="hidden">Stop simulation.</button>
+    <br><br>
+  </div>
 
   <a href="/auth/logout">Logout</a>
-  <script src="/assets/js/client/stream.js"></script>
+  
+  <% include ../includes/footer %>
+
+  <script src="/assets/js/libs/chart.bundle.min.js"></script>
+  <script src="/assets/js/libs/moment.min.js"></script>
+  <script src="/assets/js/libs/chartjs-plugin-streaming.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/assets/js/client/session/init.js"></script>
+  <script src="/assets/js/client/session/stream.js"></script>
 </body>
 </html>
