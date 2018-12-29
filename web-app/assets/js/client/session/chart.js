@@ -23,7 +23,6 @@ socket.on('datastream-pulse', data => {
   const {pulse, data_time} = data.data;
 
   if (chart) {
-    const preservation = true;
     const x = moment(data_time).format('HH:mm:ss');
     const y = pulse;
     

@@ -24,6 +24,8 @@ const constants = require('./constants');
 const EventHubClient = require('./iot-hub/IOTHubDataStream')();
 const { EventPosition } = require('@azure/event-hubs');
 
+console.log(process.env);
+
 // APP CONFIGURATION
 app.set('case sensivitive routing', false);
 app.set('view engine', 'ejs');
