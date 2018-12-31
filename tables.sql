@@ -75,3 +75,54 @@ where child_id = 0;
 select datediff(minute, start_time, end_time) as duration
 from sessions
 where session_id = 9;
+
+create table questions (
+  question_id int identity(0, 1) not null,
+  question_body varchar(200) not null,
+  owner_user_id int,
+
+  constraint questions_pk primary key(question_id),
+  constraint question_owner_fk foreign key(owner_user_id)
+    references users(user_id)
+);
+
+create table questions_sessions (
+  question_id int not null,
+  session_id int not null,
+  time datetime default getdate(),
+
+  constraint q_fk foreign key(question_id)
+    references questions(question_id),
+  constraint s_fk foreign key(session_id)
+    references sessions(session_id),
+  constraint pair_uq unique(question_id, session_id)
+);
+
+alter table questions_sessions
+add avg_pulse int;
+
+create table notes (
+  note_body varchar(200) not null,
+  note_time datetime default getdate(),
+  session_id int not null,
+  constraint notes_sessions_fk foreign key(session_id)
+    references sessions(session_id)
+);
+
+select 
+top 2
+*
+from sessions
+order by session_id desc;
+
+update qs
+set avg_pulse = (
+    select avg(pulse) as avg_pulse
+    from (
+        select top 5 pulse
+        from iot_data
+        where session_id = 15 and data_time > qs.time
+    ) OrderedTopPulseData
+) 
+from questions_sessions qs
+where session_id = 15;

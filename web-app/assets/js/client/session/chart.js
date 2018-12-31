@@ -4,7 +4,7 @@ const ctx = document.querySelector("#chart").getContext('2d');
 const config = {
   type: 'line',
   data: {
-    labels: [0],
+    labels: [],
     datasets: [{
       label: 'Heartrate',
       backgroundColor: '#ffffff',
@@ -12,7 +12,7 @@ const config = {
       fill: false,
       cubicInterpolationMode: 'monotone',
       borderDash: [8, 4],
-      data: [0]
+      data: []
     }]
   }
 };

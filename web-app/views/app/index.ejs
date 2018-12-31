@@ -11,6 +11,32 @@
       max-height: 50vh;
       max-width: 50vw;
     }
+
+    .asked-question-btn,
+    .remove-question-btn, 
+    .add-question-btn {
+      margin-left: 10px;
+    }
+
+    .asked-question-btn:hover,
+    .remove-question-btn:hover, 
+    .add-question-btn:hover {
+      cursor: pointer;
+      color: red;
+      user-select: none;
+      font-size: 17px;
+    }
+
+    #questions {
+      margin-top: 10vh;
+      margin-bottom: 10vh;
+      border: 1px solid black;
+    }
+
+    #available-questions {
+      margin-top: 5vh;
+      margin-bottom: 5vh;
+    }
   </style>
 </head>
 <body>
@@ -47,6 +73,25 @@
     <button id="stop-simulation" class="hidden">Stop simulation.</button>
     <br><br>
   </div>
+
+  <div id="questions">
+    <div id="pre-session">
+      <form id="new-question">
+        <label for="new-question">Create a new question to be asked during the session.</label>
+        <input type="text" name="new-question" placeholder="Enter name for question">
+        <input type="submit" value="Create question">
+      </form>
+      
+      <ul id="available-questions">
+      </ul>
+    </div>
+
+    <p>Session questions</p>
+    <ul id="session-questions">
+
+    </ul>
+  </div>
+
 
   <a href="/auth/logout">Logout</a>
   

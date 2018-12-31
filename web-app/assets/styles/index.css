@@ -21,3 +21,8 @@
 .working {
   color: green;
 }
+
+.asked {
+  user-select: none;
+  background: #e0e0e0;
+}
