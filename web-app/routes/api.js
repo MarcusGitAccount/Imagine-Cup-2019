@@ -73,11 +73,11 @@ module.exports = (app, isAuthenticated, db, io) => {
                     from (
                         select top 5 pulse
                         from iot_data
-                        where session_id = ${session_id} and data_time > qs.time
+                        where session_id = ${sessionId} and data_time > qs.time
                     ) OrderedTopPulseData
                 ) 
                 from questions_sessions qs
-                where session_id = ${session_id}
+                where session_id = ${sessionId}
               `;
             })
             .then(result => res.json({result: 'Device stopped and average telemetry updated.'}))
@@ -150,7 +150,75 @@ module.exports = (app, isAuthenticated, db, io) => {
     .catch(error => res.json({error}));
   });
 
+  app.post('/api/note', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id || !req.body.note_body)
+      return res.json({error: 'No session id/body note provided.'});
+
+    const session_id = req.body.session_id;
+    const note_body = req.body.note_body;
+    const userd_id = req.session.user.user_id;
+
+    if (note_body.length == 0)
+      return res.json({error: 'Note body cannot be empty.'});
+
+    db.connect()
+    .then(() => {
+      return db.sql.query`
+        insert into notes(note_body, note_time, session_id, user_id)
+        values(${note_body}, getdate(), ${session_id}, ${userd_id});
+      `;
+    })
+    .then(result => res.json({result: 'Note inserted.'}))
+    .catch(error => res.json({error}));
+  });
+
+  app.post('/api/result/session', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id)
+      return res.json({error: 'No session id provided.'});
+
+    const session_id = req.body.session_id;
+
+    db.connect()
+    .then(() => {
+      return db.sql.query`
+        select *
+        from sessions
+        where session_id = ${session_id}
+      `;
+    })
+    .then(result => res.json({data: result.recordset[0]}))
+    .catch(error => res.json({error}));
+  });
+
   app.get('/api/testinsertion', isAuthenticated, (req, res) => {
+    let name = '';
+    let letters = [];
+    const count = (Math.random() * 100) >> 0;
+
+    for (let i = 0; i < 3 + ((Math.random() * 10) >> 0); i++) {
+      const char = 65 + ((Math.random() * 25) >> 0);
+
+      letters.push(String.fromCharCode(char));
+    }
+
+    name = letters.join('');
+    db.connect()
+      .then(() => {
+        return db.sql.query`
+          insert into dummy(name, type_count)
+          values(${name}, ${count})
+          select scope_identity();
+        `;
+      })
+      .then(result => {
+        res.send(result.recordset[0][""] + ' ' + name + ' ' + count);
+      })
+      .catch(error => {
+        res.send(error);
+      });
+  });
+
+   app.get('/api/testinsertion', isAuthenticated, (req, res) => {
     let name = '';
     let letters = [];
     const count = (Math.random() * 100) >> 0;

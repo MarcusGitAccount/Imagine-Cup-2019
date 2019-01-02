@@ -1,13 +1,13 @@
 'use strict';
 
 (async () => {
-
   const inSession = window.localStorage.getItem('inSession');
 
   if (inSession && inSession == "true") {
     document.querySelector('#session-controls').classList.add('hidden');
     document.querySelector('#start-simulation').classList.add('hidden');
     document.querySelector('#stop-simulation').classList.remove('hidden');
+    document.querySelector('form#new-note').classList.add('hidden');
   }
 
   document.querySelector('#ping-device').addEventListener('click', e => {
@@ -75,6 +75,7 @@
         e.target.classList.add('hidden');
         document.querySelector('#session-controls').classList.add('hidden');
         document.querySelector('#stop-simulation').classList.remove('hidden');
+        document.querySelector('form#new-note').classList.remove('hidden');
         window.alert(res.result.payload);
       }
     })
@@ -107,8 +108,9 @@
         window.localStorage.setItem('inSession', false)
         
         document.querySelector('#session-controls').classList.remove('hidden');
-        e.target.classList.add('hidden');
+        document.querySelector('form#new-note').classList.add('hidden');
         document.querySelector('#start-simulation').classList.remove('hidden');
+        e.target.classList.add('hidden');
         window.alert('Session stopped'); // or a more elegant way of displaying user messages?
       }
     })

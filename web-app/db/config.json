@@ -1,0 +1,9 @@
+{
+  "user": "upperadmin",
+  "password": "kiwiAMAR[]13",
+  "server": "upperdbserver.database.windows.net",
+  "database": "UpperDatabase",
+  "options": {
+    "encrypt": true,
+  }
+}

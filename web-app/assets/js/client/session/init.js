@@ -84,15 +84,6 @@ function addQuestionToSession(id, questionBody) {
   ul.appendChild(li);
 }
 
-function handlePromiseErrors(error) {
-  const errorsContainer = document.querySelector('span#errors');
-
-  if (typeof(error) != 'string')
-    error = 'Couldn\'t perform action';
-  if (errorsContainer)
-    errorsContainer.innerHTML += `<p class="error">Error: ${error}</p>`;
-}
-
 async function fetchInitialData() {
   try {
     const data = await Promise.
@@ -156,6 +147,7 @@ async function init() {
 function initMiscellaneousEvents() {
   selectChildrenEvents();
   createQuestionEvents();
+  createNotesEvents();
 }
 
 function createQuestionEvents() {
@@ -183,6 +175,41 @@ function createQuestionEvents() {
           return Promise.reject('Questions ul element doesn\'t exist.');
 
         ul.appendChild(addQuestionInSessionSelect(res.question_id, res.question_body));
+      })
+      .catch(handlePromiseErrors);
+
+    return false;
+  });
+}
+
+function createNotesEvents() {
+  document.querySelector('form#new-note').addEventListener('submit', e => {
+    e.preventDefault();
+
+    if (window.localStorage.getItem('inSession') == 'false')
+     return false;
+
+    const {session_id} = JSON.parse(window.localStorage.getItem('current'));
+    const note_body = e.target.querySelector('textarea').value;
+
+    if (!note_body || note_body.length == 0)
+      return handlePromiseErrors('Invalid note body.');
+
+    fetch('/api/note', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({note_body, session_id})
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res.error)
+          return Promise.reject(res.error);
+
+        e.target.querySelector('textarea').value = '';
+        window.alert('Note added.');
       })
       .catch(handlePromiseErrors);
 

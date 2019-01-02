@@ -126,3 +126,10 @@ set avg_pulse = (
 ) 
 from questions_sessions qs
 where session_id = 15;
+
+alter table notes
+add user_id int;
+
+alter table notes
+add constraint notes_user_fk foreign key(user_id)
+  references users(user_id);

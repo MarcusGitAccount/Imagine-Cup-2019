@@ -2,10 +2,9 @@ web-app/node_modules
 misc.txt
 .env
 .vscode
-web-app/assets/js/libs
-web-app/db/config.json
 stream analytics job/UpperASA/UpperASA/Outputs/db.json
 stream analytics job/UpperASA/UpperASA/Inputs/iot.json
 stream analytics job/UpperASA/UpperASA/Outputs/event.json
 credits
 simulated\ device/node_modules
+web-app/assets/materialize-css

@@ -92,11 +92,15 @@
     </ul>
   </div>
 
-
-  <a href="/auth/logout">Logout</a>
+  <form id="new-note" class="hidden">
+    <p>Add a new note.</p>
+    <textarea name="comment" form="new-note" rows="4" cols="50"></textarea>
+    <input type="submit" value="Add note.">
+  </form>
   
   <% include ../includes/footer %>
 
+  <script src="/assets/js/client/error.js"></script>
   <script src="/assets/js/libs/chart.bundle.min.js"></script>
   <script src="/assets/js/libs/moment.min.js"></script>
   <script src="/assets/js/libs/chartjs-plugin-streaming.min.js"></script>

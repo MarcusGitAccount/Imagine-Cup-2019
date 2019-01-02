@@ -26,3 +26,113 @@
   user-select: none;
   background: #e0e0e0;
 }
+
+.background-1 {
+  background: url('/assets/images/paper_boat.jpg');
+  background-position: top left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: saturation;
+  filter: brightness(.9);
+}
+
+.background-2 {
+  width: 100%;
+	height: 100vh;
+  background: url('/assets/images/balloons.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+/* LOADING ANIMATION START*/
+.loading-animation {
+  display: flex;
+  height: 20vh;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.animation-text {
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+
+.loading-animation-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  min-height: 10vh;
+}
+
+.loading-animation-container > .square {
+  position: relative;
+  height: 40px;
+  width: 40px;
+  margin: 0;
+}
+
+.loading-animation-container > .square:not(:first-of-type):before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  left: 0;
+  background-color: #ad1457;
+  border-radius: 50%;
+}
+
+.loading-animation-container > .square:not(:last-of-type):after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  left: 20px;
+  border-radius: 50%;
+  background-color: #009688;
+}
+
+.loading-animation-container > .square:first-of-type {
+  height: 80px;
+  animation: pendul-left;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.loading-animation-container > .square:last-of-type {
+  height: 80px;
+  animation: pendul-right;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-delay: .75s;
+}
+  
+@keyframes pendul-left {
+  25% {
+    transform: rotate(120deg);
+  }
+  50% {
+    transform: rotate(0);
+  }
+}
+
+@keyframes pendul-right {
+  25% {
+    transform: rotate(-120deg);
+  }
+  50% {
+    transform: rotate(0);
+  }
+}
+
+/* LOADING ANIMATION END*/
