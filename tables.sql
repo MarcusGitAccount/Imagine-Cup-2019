@@ -133,3 +133,45 @@ add user_id int;
 alter table notes
 add constraint notes_user_fk foreign key(user_id)
   references users(user_id);
+
+
+-- select all questions
+
+select q.question_body, u.name as createdby, qs.avg_pulse, us.name, question_id as askedby
+from questions q
+join users u
+on u.user_id = q.owner_user_id 
+join users us
+on us.user_id = q.owner_user_id 
+join questions_sessions qs
+on qs.question_id = q.question_id
+where qs.session_id = 15;
+
+-- select previous session questions for comparison
+
+select q.question_id, qs.avg_pulse, s.session_name, u.name as askedby
+from questions_sessions qs
+join questions q
+on q.question_id = qs.question_id
+join sessions s
+on s.session_id = qs.session_id
+join users u
+on u.user_id = q.owner_user_id 
+where qs.session_id != 15 and q.question_id = 14 and s.child_id = 0
+
+--
+
+alter table sessions
+add child_id int;
+
+alter table sessions
+add constraint session_child_fk foreign key(child_id)
+references children(child_id);
+
+update s
+set child_id = (
+    select top 1 child_id
+    from iot_data
+    where session_id = s.session_id
+)
+from sessions s;

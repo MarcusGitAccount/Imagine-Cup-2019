@@ -7,7 +7,7 @@ function handlePromiseErrors(error) {
     console.log("Couldn't handle error", error);
     return false;
   }
-  if (typeof(error) != 'string')
+  if (!error || typeof(error) != 'string')
     error = 'Couldn\'t perform action';
   if (errorsContainer)
     errorsContainer.innerHTML += `<p class="error">Error: ${error}</p>`;

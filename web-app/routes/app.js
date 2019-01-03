@@ -24,7 +24,8 @@ module.exports = (app, db, io, isAuthenticated) => {
 
         res.status(200).render(path.join('app', 'result'), {
           user: req.session.user,
-          session_id: req.params.session_id
+          session_id: result.recordset[0].session_id,
+          child_id: result.recordset[0].child_id
         });
       }))
       .catch(error => res.send(error));

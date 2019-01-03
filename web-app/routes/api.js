@@ -25,8 +25,8 @@ module.exports = (app, isAuthenticated, db, io) => {
     db.connect()
     .then(() => {
         return db.sql.query`
-          insert into sessions(end_time, session_name, user_id)
-          values(null, ${sessionName}, ${userId})
+          insert into sessions(end_time, session_name, user_id, child_id)
+          values(null, ${sessionName}, ${userId}, ${childId})
           select scope_identity();
       `;
       })
@@ -92,14 +92,14 @@ module.exports = (app, isAuthenticated, db, io) => {
     .then(() => {
       return db.sql.query`
         select 
-        child_id,
-        concat(first_name, ' ', last_name) as name,
-        device_name as device
+          child_id,
+          concat(first_name, ' ', last_name) as name,
+          device_name as device
         from
         children c
         join
         devices d
-        on (c.device_id = d.device_id);
+          on (c.device_id = d.device_id);
       `;
     })
     .then(result => res.json({data: result.recordset}))
@@ -172,24 +172,6 @@ module.exports = (app, isAuthenticated, db, io) => {
     .catch(error => res.json({error}));
   });
 
-  app.post('/api/result/session', isAuthenticated, (req, res) => {
-    if (!req.body || !req.body.session_id)
-      return res.json({error: 'No session id provided.'});
-
-    const session_id = req.body.session_id;
-
-    db.connect()
-    .then(() => {
-      return db.sql.query`
-        select *
-        from sessions
-        where session_id = ${session_id}
-      `;
-    })
-    .then(result => res.json({data: result.recordset[0]}))
-    .catch(error => res.json({error}));
-  });
-
   app.get('/api/testinsertion', isAuthenticated, (req, res) => {
     let name = '';
     let letters = [];
@@ -218,31 +200,123 @@ module.exports = (app, isAuthenticated, db, io) => {
       });
   });
 
-   app.get('/api/testinsertion', isAuthenticated, (req, res) => {
-    let name = '';
-    let letters = [];
-    const count = (Math.random() * 100) >> 0;
 
-    for (let i = 0; i < 3 + ((Math.random() * 10) >> 0); i++) {
-      const char = 65 + ((Math.random() * 25) >> 0);
+  app.post('/api/result/session', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id)
+      return res.json({error: 'No session id provided.'});
 
-      letters.push(String.fromCharCode(char));
-    }
+    const session_id = req.body.session_id;
 
-    name = letters.join('');
     db.connect()
-      .then(() => {
-        return db.sql.query`
-          insert into dummy(name, type_count)
-          values(${name}, ${count})
-          select scope_identity();
-        `;
-      })
-      .then(result => {
-        res.send(result.recordset[0][""] + ' ' + name + ' ' + count);
-      })
-      .catch(error => {
-        res.send(error);
-      });
+    .then(() => {
+      return db.sql.query`
+      select 
+        s.start_time, s.end_time, s.session_name,
+        concat(c.first_name, ' ', c.last_name) as child_name,
+        u.name as createdby
+      from sessions s
+      join children c
+        on c.child_id = s.child_id
+      join users u
+        on u.user_id = s.user_id
+      where session_id = ${session_id}
+      `;
+    })
+    .then(result => res.json({data: result.recordset[0]}))
+    .catch(error => res.json({error}));
+  });
+
+  app.post('/api/result/notes', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id)
+      return res.json({error: 'No session id provided.'});
+
+    const session_id = req.body.session_id;
+
+    db.connect()
+    .then(() => {
+      return db.sql.query`
+        select 
+          n.note_body, n.note_time, 
+          datediff(ms, s.start_time, n.note_time) as elapsed_time
+        from notes n
+        join sessions s
+          on s.session_id = n.session_id
+        where n.session_id = ${session_id}
+      `;
+    })
+    .then(result => res.json({data: result.recordset}))
+    .catch(error => res.json({error}));
+  });
+
+  app.post('/api/result/data', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id || req.body.child_id == undefined)
+      return res.json({error: 'No session or child id provided.'});
+
+    const session_id = req.body.session_id;
+    const child_id   = req.body.child_id;
+
+    db.connect()
+    .then(() => {
+      return db.sql.query`
+        select pulse, data_time
+        from iot_data
+        where session_id = ${session_id} and child_id = ${child_id}
+      `;
+    })
+    .then(result => res.json({data: result.recordset}))
+    .catch(error => res.json({error}));
+  });
+
+  app.post('/api/result/questions', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id)
+      return res.json({error: 'No session or child id provided.'});
+
+    const session_id = req.body.session_id;
+
+    db.connect()
+    .then(() => {
+      return db.sql.query`
+        select 
+          q.question_body, u.name as createdby,
+          qs.avg_pulse, q.question_id, session_name
+        from questions q
+        join users u
+          on u.user_id = q.owner_user_id 
+        join questions_sessions qs
+          on qs.question_id = q.question_id
+        join sessions s
+          on qs.session_id = s.session_id 
+        where qs.session_id = ${session_id};
+      `;
+    })
+    .then(result => res.json({data: result.recordset}))
+    .catch(error => res.json({error}));
+  });
+
+  app.post('/api/result/other_questions', isAuthenticated, (req, res) => {
+    if (!req.body || !req.body.session_id || !req.body.question_id)
+      return res.json({error: 'No session or question id provided.'});
+
+    const session_id  = req.body.session_id;
+    const question_id = req.body.question_id;
+
+    db.connect()
+    .then(() => {
+      return db.sql.query`
+        select 
+          q.question_body, u.name as createdby, 
+          qs.avg_pulse, q.question_id, session_name
+        from questions q
+        join users u
+          on u.user_id = q.owner_user_id 
+        join questions_sessions qs
+          on qs.question_id = q.question_id
+        join sessions s
+          on qs.session_id = s.session_id 
+        where qs.session_id != ${session_id} and q.question_id = ${question_id};
+      `;
+    })
+    .then(result => res.json({data: result.recordset}))
+    .catch(error => res.json({error}));
   });
 };
