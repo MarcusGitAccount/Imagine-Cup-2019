@@ -3,9 +3,9 @@
 function addQuestionInSessionSelect(id, questionBody) {
   const li = document.createElement('li');
   const body = document.createElement('span');
-  const btn  = document.createElement('span');
+  const btn  = document.createElement('a');
 
-  li.className = '';
+  li.className = 'list-group-item';
   body.className = 'question-body';
   btn.className = 'add-question-btn';
 
@@ -30,11 +30,11 @@ function addQuestionToSession(id, questionBody) {
   const ul = document.querySelector('#session-questions');
   const li = document.createElement('li');
   const body = document.createElement('span');
-  const asked  = document.createElement('span');
-  const remove  = document.createElement('span');
+  const asked  = document.createElement('a');
+  const remove  = document.createElement('a');
 
   li.title = 'Not asked yet';
-  li.className = '';
+  li.className = 'list-group-item';
   body.className = 'question-body';
   asked.className = 'asked-question-btn';
   remove.className = 'remove-question-btn';
@@ -175,6 +175,7 @@ function createQuestionEvents() {
           return Promise.reject('Questions ul element doesn\'t exist.');
 
         ul.appendChild(addQuestionInSessionSelect(res.question_id, res.question_body));
+        document.querySelector('input[name=new-question]').value = '';
       })
       .catch(handlePromiseErrors);
 
@@ -186,6 +187,8 @@ function createNotesEvents() {
   document.querySelector('form#new-note').addEventListener('submit', e => {
     e.preventDefault();
 
+    if (!window.localStorage.getItem('inSession'))
+      return false;
     if (window.localStorage.getItem('inSession') == 'false')
      return false;
 

@@ -88,6 +88,7 @@ async function fetchData(data) {
           <th>${i}</th>
           <th>${data.createdby}</th>
           <th>${data.avg_pulse}</th>
+          <th title="${data.question_body}">${data.question_body}</th>
           <th>${data.session_name}</th>
           <th class="comp-question" title="Click to compare">compare</th>
         `;
@@ -120,6 +121,7 @@ async function fetchData(data) {
                   <th>-</th>
                   <th>${data.createdby}</th>
                   <th>${data.avg_pulse}</th>
+                  <th title="${data.question_body}">${data.question_body}</th>
                   <th>${data.session_name}</th>
                   <th>-</th>
                 `;

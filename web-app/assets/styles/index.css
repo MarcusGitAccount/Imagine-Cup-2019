@@ -18,9 +18,6 @@
   display: none;
 }
 
-.working {
-  color: green;
-}
 
 .asked {
   user-select: none;
@@ -139,4 +136,8 @@
 
 .compared-to {
   background: cyan;
+}
+
+tr {
+  text-overflow: ellipsis;
 }

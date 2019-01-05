@@ -1,7 +1,7 @@
 'use strict';
 
 function handlePromiseErrors(error) {
-  const errorsContainer = document.querySelector('span#errors');
+  const errorsContainer = document.querySelector('#errors');
 
   if (!errorsContainer) {
     console.log("Couldn't handle error", error);

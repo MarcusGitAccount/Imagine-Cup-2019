@@ -3,7 +3,7 @@
 <%  messages = getMessages() %>
 <% } %>
 
-<span id="errors" class="container">
+<div id="errors" class="container">
   <% if (messages && messages.error && Array.isArray(messages.error)) { %>
     <% for (const type in messages) { %>
       <% for (const message of messages[type]) { %>
@@ -14,4 +14,4 @@
       <% } %> 
     <% } %>
   <% } %>  
-</span>
+      </div>
