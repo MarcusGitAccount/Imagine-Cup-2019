@@ -65,6 +65,7 @@
       if (res.error)
         return Promise.reject(res.error);
       else {
+        document.title = `Current session: ${text.value}`;
         text.value = '';
         window.localStorage.setItem('device', device);
         window.localStorage.setItem('childName', select[select.selectedIndex].innerHTML);

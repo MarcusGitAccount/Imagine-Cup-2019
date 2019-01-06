@@ -79,6 +79,12 @@ async function fetchData(data) {
           For each question you can compare the child's metric during other sessions to see if he/she improved.
         `;
 
+      const emotion = (set) => {
+        if (!set || !set.dominant_emotion)
+          return 'Not register';
+        return `${set.dominant_emotion} (${(set.dominant_emotion_value * 100) | 0}%)`
+      };
+
       const body = container.querySelector('tbody');
       for (let i = 0; i < res.data.length; i++) {
         const tr = document.createElement('tr');
@@ -86,10 +92,11 @@ async function fetchData(data) {
 
         tr.innerHTML = `
           <th>${i}</th>
-          <th>${data.createdby}</th>
-          <th>${data.avg_pulse}</th>
-          <th title="${data.question_body}">${data.question_body}</th>
-          <th>${data.session_name}</th>
+          <th title="Owner of the qeustion">${data.createdby}</th>
+          <th title="Biometrical response to this question: average pulse after the question was asked.">${data.avg_pulse}</th>
+          <th title="Emotional response to this question: main emotion registered and the confindence level of its">${emotion(data)}</th>
+          <th title="Actual question"${data.question_body}">${data.question_body}</th>
+          <th title="Name of the session">${data.session_name}</th>
           <th>
             <a class="comp-question" title="Click to compare">Compare</a>
           </th>
@@ -121,10 +128,11 @@ async function fetchData(data) {
 
                 tr.innerHTML = `
                   <th>-</th>
-                  <th>${data.createdby}</th>
-                  <th>${data.avg_pulse}</th>
-                  <th title="${data.question_body}">-</th>
-                  <th>${data.session_name}</th>
+                  <th title="Owner of the qeustion">${data.createdby}</th>
+                  <th title="Biometrical response to this question: average pulse after the question was asked.">${data.avg_pulse}</th>
+                  <th title="Emotional response to this question: main emotion registered and the confindence level of its">${emotion(data)}</th>
+                  <th title="Actual question"${data.question_body}">-</th>
+                  <th title="Name of the session">${data.session_name}</th>
                   <th>-</th>
                 `;
                 tr.dataset.id = data.question_id;
