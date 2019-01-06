@@ -213,7 +213,7 @@ set
     from (
         select top 5 pulse
         from iot_data
-        where session_id = 13 and data_time > qs.time
+        where session_id = 33 and data_time > qs.time
     ) OrderedTopPulseData
   ),
   dominant_emotion = (
@@ -227,7 +227,7 @@ set
         when neutral >= anger and neutral >= contempt and neutral >= disgust and neutral >= fear and neutral >= happiness and neutral >= sadness and neutral >= surprise then 'neutral'
         when sadness >= anger and sadness >= contempt and sadness >= disgust and sadness >= fear and sadness >= happiness and sadness >= neutral and sadness >= surprise then 'sadness'
         when surprise >= anger and surprise >= contempt and surprise >= disgust and surprise >= fear and surprise >= happiness and surprise >= neutral and surprise >= sadness then 'surprise'
-      else 'anger'
+    else 'anger'
     end as dominant_emotion
     from (
       select
@@ -257,8 +257,8 @@ set
         when neutral >= anger and neutral >= contempt and neutral >= disgust and neutral >= fear and neutral >= happiness and neutral >= sadness and neutral >= surprise then neutral
         when sadness >= anger and sadness >= contempt and sadness >= disgust and sadness >= fear and sadness >= happiness and sadness >= neutral and sadness >= surprise then sadness
         when surprise >= anger and surprise >= contempt and surprise >= disgust and surprise >= fear and surprise >= happiness and surprise >= neutral and surprise >= sadness then surprise
-      else anger
-    end as dominant_emotion
+    else anger
+    end as dominant_emotion_value
     from (
       select
         avg(anger)     as  anger, 
@@ -307,3 +307,6 @@ unpivot (
     for dominant_emotion in (anger, contempt, disgust, fear, happiness, neutral ,sadness, surprise)
 ) UnPivoted
 group by emotion_id
+
+alter table questions_sessions
+alter column dominant_emotion_value float;

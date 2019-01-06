@@ -68,16 +68,77 @@ module.exports = (app, isAuthenticated, db, io) => {
             .then(() => {
               return db.sql.query`
                 update qs
-                set avg_pulse = (
+                set 
+                  avg_pulse = (
                     select avg(pulse) as avg_pulse
                     from (
                         select top 5 pulse
                         from iot_data
                         where session_id = ${sessionId} and data_time > qs.time
                     ) OrderedTopPulseData
-                ) 
+                  ),
+                  dominant_emotion = (
+                    select 
+                    case
+                        when anger >= contempt and anger >= disgust and anger >= fear and anger >= happiness and anger >= neutral and anger >= sadness and anger >= surprise then 'anger'
+                        when contempt >= anger and contempt >= disgust and contempt >= fear and contempt >= happiness and contempt >= neutral and contempt >= sadness and contempt >= surprise then 'contempt'
+                        when disgust >= anger and disgust >= contempt and disgust >= fear and disgust >= happiness and disgust >= neutral and disgust >= sadness and disgust >= surprise then 'disgust'
+                        when fear >= anger and fear >= contempt and fear >= disgust and fear >= happiness and fear >= neutral and fear >= sadness and fear >= surprise then 'fear'
+                        when happiness >= anger and happiness >= contempt and happiness >= disgust and happiness >= fear and happiness >= neutral and happiness >= sadness and happiness >= surprise then 'happiness'
+                        when neutral >= anger and neutral >= contempt and neutral >= disgust and neutral >= fear and neutral >= happiness and neutral >= sadness and neutral >= surprise then 'neutral'
+                        when sadness >= anger and sadness >= contempt and sadness >= disgust and sadness >= fear and sadness >= happiness and sadness >= neutral and sadness >= surprise then 'sadness'
+                        when surprise >= anger and surprise >= contempt and surprise >= disgust and surprise >= fear and surprise >= happiness and surprise >= neutral and surprise >= sadness then 'surprise'
+                    else 'anger'
+                    end as dominant_emotion
+                    from (
+                      select
+                        avg(anger)     as  anger, 
+                        avg(contempt)  as  contempt, 
+                        avg(disgust)   as  disgust, 
+                        avg(fear)      as  fear, 
+                        avg(happiness) as  happiness, 
+                        avg(neutral)   as  neutral, 
+                        avg(sadness)   as  sadness, 
+                        avg(surprise)  as  surprise
+                      from (
+                        select top 5 *
+                        from emotions
+                        where session_id = ${sessionId} and emotion_time > qs.time
+                      ) Top5ColName
+                    ) AvgColName
+                  ),
+                  dominant_emotion_value = (
+                    select 
+                    case
+                        when anger >= contempt and anger >= disgust and anger >= fear and anger >= happiness and anger >= neutral and anger >= sadness and anger >= surprise then anger
+                        when contempt >= anger and contempt >= disgust and contempt >= fear and contempt >= happiness and contempt >= neutral and contempt >= sadness and contempt >= surprise then contempt
+                        when disgust >= anger and disgust >= contempt and disgust >= fear and disgust >= happiness and disgust >= neutral and disgust >= sadness and disgust >= surprise then disgust
+                        when fear >= anger and fear >= contempt and fear >= disgust and fear >= happiness and fear >= neutral and fear >= sadness and fear >= surprise then fear
+                        when happiness >= anger and happiness >= contempt and happiness >= disgust and happiness >= fear and happiness >= neutral and happiness >= sadness and happiness >= surprise then happiness
+                        when neutral >= anger and neutral >= contempt and neutral >= disgust and neutral >= fear and neutral >= happiness and neutral >= sadness and neutral >= surprise then neutral
+                        when sadness >= anger and sadness >= contempt and sadness >= disgust and sadness >= fear and sadness >= happiness and sadness >= neutral and sadness >= surprise then sadness
+                        when surprise >= anger and surprise >= contempt and surprise >= disgust and surprise >= fear and surprise >= happiness and surprise >= neutral and surprise >= sadness then surprise
+                    else anger
+                    end as dominant_emotion_value
+                    from (
+                      select
+                        avg(anger)     as  anger, 
+                        avg(contempt)  as  contempt, 
+                        avg(disgust)   as  disgust, 
+                        avg(fear)      as  fear, 
+                        avg(happiness) as  happiness, 
+                        avg(neutral)   as  neutral, 
+                        avg(sadness)   as  sadness, 
+                        avg(surprise)  as  surprise
+                      from (
+                        select top 5 *
+                        from emotions
+                        where session_id = ${sessionId} and emotion_time > qs.time
+                      ) Top5ColValue
+                    ) AvgColValue
+                  )
                 from questions_sessions qs
-                where session_id = ${sessionId}
+                where session_id = ${sessionId};
               `;
             })
             .then(result => res.json({result: 'Device stopped and average telemetry updated.'}))
