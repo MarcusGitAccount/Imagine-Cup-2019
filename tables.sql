@@ -242,11 +242,11 @@ set
       from (
         select top 5 *
         from emotions
-        where session_id = 13 and emotion_time > qs.time
-      )
-    )
+        where session_id = 33 and emotion_time > qs.time
+      ) Top5ColName
+    ) AvgColName
   ),
-  dominant_emotion = (
+  dominant_emotion_value = (
     select 
     case
         when anger >= contempt and anger >= disgust and anger >= fear and anger >= happiness and anger >= neutral and anger >= sadness and anger >= surprise then anger
@@ -272,12 +272,12 @@ set
       from (
         select top 5 *
         from emotions
-        where session_id = 13 and emotion_time > qs.time
-      )
-    )
+        where session_id = 33 and emotion_time > qs.time
+      ) Top5ColValue
+    ) AvgColValue
   )
 from questions_sessions qs
-where session_id = 13
+where session_id = 33;
 
 
 select count(*)

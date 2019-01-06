@@ -4,30 +4,6 @@
 'use strict';
 
 const chalk = require('chalk');
-const DbModel = require('./db');
-const db = new DbModel();
-
-// var NodeWebcam = require( "node-webcam" );
-// var opts = {
-//   width: 1280,
-//   height: 720,
-//   quality: 100,
-//   delay: 0,
-//   saveShots: true,
-//   output: "jpeg",
-//   device: false,
-//   callbackReturn: "location",
-//   verbose: false
-
-// };
-
-
-// //Creates webcam instance
-
-// var Webcam = NodeWebcam.create( opts );
-
-// Webcam.capture( "test_picture", function( err, data ) {} );
-
 const connectionString = "HostName=MiPiHub.azure-devices.net;DeviceId=Pi_0000;SharedAccessKey=wwZFGxb1+hijvU40/G9PrLr/qPeZLlszKL2XMNezkK4=";
 const Mqtt = require('azure-iot-device-mqtt').Mqtt;
 const DeviceClient = require('azure-iot-device').Client
@@ -114,8 +90,8 @@ function sendMessage(child_id, session_id) {
       
       const json = JSON.parse(data);
       
-    if (!json)
-      return console.log('Error sending message.');
+    if (!json || !json[0] || !json[0].faceAttributes)
+      return console.log('Not sending this message.');
 
     const {emotion} = json[0].faceAttributes
     const message = new Message(JSON.stringify({
