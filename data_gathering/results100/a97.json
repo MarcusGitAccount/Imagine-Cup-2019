@@ -1,0 +1,23 @@
+[
+  {
+    "faceId": "cedbb4a5-21ea-4cc6-ac5c-d4485158638c",
+    "faceRectangle": {
+      "top": 266,
+      "left": 246,
+      "width": 177,
+      "height": 177
+    },
+    "faceAttributes": {
+      "emotion": {
+        "anger": 0,
+        "contempt": 0,
+        "disgust": 0.004,
+        "fear": 0,
+        "happiness": 0.098,
+        "neutral": 0,
+        "sadness": 0.898,
+        "surprise": 0
+      }
+    }
+  }
+]

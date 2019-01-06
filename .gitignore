@@ -8,3 +8,4 @@ stream analytics job/UpperASA/UpperASA/Outputs/event.json
 credits
 simulated\ device/node_modules
 web-app/assets/materialize-css
+data_gathering/node_modules

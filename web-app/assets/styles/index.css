@@ -82,7 +82,7 @@
   height: 20px;
   bottom: 0;
   left: 0;
-  background-color: #ad1457;
+  background-color: rgb(248, 186, 5);
   border-radius: 50%;
 }
 
@@ -94,7 +94,7 @@
   bottom: 0;
   left: 20px;
   border-radius: 50%;
-  background-color: #009688;
+  background-color: rgb(110, 174, 220);
 }
 
 .loading-animation-container > .square:first-of-type {
@@ -135,7 +135,8 @@
 /* LOADING ANIMATION END*/
 
 .compared-to {
-  background: cyan;
+  background: rgb(110, 174, 220);
+  opacity: .925;
 }
 
 tr, th {

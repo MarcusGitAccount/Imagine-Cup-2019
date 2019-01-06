@@ -175,3 +175,135 @@ set child_id = (
     where session_id = s.session_id
 )
 from sessions s;
+
+alter table questions_sessions
+add dominant_emotion varchar(30);
+
+alter table questions_sessions
+add dominant_emotion_value decimal;
+
+create table emotions (
+  emotion_id int identity(0, 1) not null,
+  child_id int not null,
+  session_id int not null,
+  emotion_time datetime default getdate(), 
+  anger float, 
+  contempt float, 
+  disgust float, 
+  fear float, 
+  happiness float, 
+  neutral float, 
+  sadness float, 
+  surprise float,
+  
+  constraint emotions_pk primary key(emotion_id),
+  constraint child_emotions_fk foreign key(child_id)
+    references children(child_id) on delete cascade,
+  constraint session_emotions_fk foreign key(session_id)
+    references sessions(session_id) on delete cascade
+);
+
+
+-- SESSION UPDATE, big query incoming
+
+update qs
+set 
+  avg_pulse = (
+    select avg(pulse) as avg_pulse
+    from (
+        select top 5 pulse
+        from iot_data
+        where session_id = 13 and data_time > qs.time
+    ) OrderedTopPulseData
+  ),
+  dominant_emotion = (
+    select 
+    case
+        when anger >= contempt and anger >= disgust and anger >= fear and anger >= happiness and anger >= neutral and anger >= sadness and anger >= surprise then 'anger'
+        when contempt >= anger and contempt >= disgust and contempt >= fear and contempt >= happiness and contempt >= neutral and contempt >= sadness and contempt >= surprise then 'contempt'
+        when disgust >= anger and disgust >= contempt and disgust >= fear and disgust >= happiness and disgust >= neutral and disgust >= sadness and disgust >= surprise then 'disgust'
+        when fear >= anger and fear >= contempt and fear >= disgust and fear >= happiness and fear >= neutral and fear >= sadness and fear >= surprise then 'fear'
+        when happiness >= anger and happiness >= contempt and happiness >= disgust and happiness >= fear and happiness >= neutral and happiness >= sadness and happiness >= surprise then 'happiness'
+        when neutral >= anger and neutral >= contempt and neutral >= disgust and neutral >= fear and neutral >= happiness and neutral >= sadness and neutral >= surprise then 'neutral'
+        when sadness >= anger and sadness >= contempt and sadness >= disgust and sadness >= fear and sadness >= happiness and sadness >= neutral and sadness >= surprise then 'sadness'
+        when surprise >= anger and surprise >= contempt and surprise >= disgust and surprise >= fear and surprise >= happiness and surprise >= neutral and surprise >= sadness then 'surprise'
+      else 'anger'
+    end as dominant_emotion
+    from (
+      select
+        avg(anger)     as  anger, 
+        avg(contempt)  as  contempt, 
+        avg(disgust)   as  disgust, 
+        avg(fear)      as  fear, 
+        avg(happiness) as  happiness, 
+        avg(neutral)   as  neutral, 
+        avg(sadness)   as  sadness, 
+        avg(surprise)  as  surprise
+      from (
+        select top 5 *
+        from emotions
+        where session_id = 13 and emotion_time > qs.time
+      )
+    )
+  ),
+  dominant_emotion = (
+    select 
+    case
+        when anger >= contempt and anger >= disgust and anger >= fear and anger >= happiness and anger >= neutral and anger >= sadness and anger >= surprise then anger
+        when contempt >= anger and contempt >= disgust and contempt >= fear and contempt >= happiness and contempt >= neutral and contempt >= sadness and contempt >= surprise then contempt
+        when disgust >= anger and disgust >= contempt and disgust >= fear and disgust >= happiness and disgust >= neutral and disgust >= sadness and disgust >= surprise then disgust
+        when fear >= anger and fear >= contempt and fear >= disgust and fear >= happiness and fear >= neutral and fear >= sadness and fear >= surprise then fear
+        when happiness >= anger and happiness >= contempt and happiness >= disgust and happiness >= fear and happiness >= neutral and happiness >= sadness and happiness >= surprise then happiness
+        when neutral >= anger and neutral >= contempt and neutral >= disgust and neutral >= fear and neutral >= happiness and neutral >= sadness and neutral >= surprise then neutral
+        when sadness >= anger and sadness >= contempt and sadness >= disgust and sadness >= fear and sadness >= happiness and sadness >= neutral and sadness >= surprise then sadness
+        when surprise >= anger and surprise >= contempt and surprise >= disgust and surprise >= fear and surprise >= happiness and surprise >= neutral and surprise >= sadness then surprise
+      else anger
+    end as dominant_emotion
+    from (
+      select
+        avg(anger)     as  anger, 
+        avg(contempt)  as  contempt, 
+        avg(disgust)   as  disgust, 
+        avg(fear)      as  fear, 
+        avg(happiness) as  happiness, 
+        avg(neutral)   as  neutral, 
+        avg(sadness)   as  sadness, 
+        avg(surprise)  as  surprise
+      from (
+        select top 5 *
+        from emotions
+        where session_id = 13 and emotion_time > qs.time
+      )
+    )
+  )
+from questions_sessions qs
+where session_id = 13
+
+
+select count(*)
+from (
+    select session_id, dominant_emotion, dominant_emotion_value
+    from emotions
+    unpivot (
+        dominant_emotion_value
+        for dominant_emotion in (anger, contempt, disgust, fear, happiness, neutral ,sadness, surprise)
+    ) A
+) B
+
+
+insert into emotions
+values (0, 13, getdate(), 0.95, 0, 0.03, 0, 0, 0, 0.03, 0);
+
+insert into emotions
+values (0, 13, getdate(), 0, 0, 0.2, 0.2, 0.6, 0, 0, 0)
+
+insert into emotions
+values (0, 13, getdate(), 0, 0, 0.45, 0.55, 0, 0, 0.03, 0);
+
+select emotion_id, max(dominant_emotion_value) as dominant_emotion_value
+from emotions
+unpivot (
+    dominant_emotion_value
+    for dominant_emotion in (anger, contempt, disgust, fear, happiness, neutral ,sadness, surprise)
+) UnPivoted
+group by emotion_id

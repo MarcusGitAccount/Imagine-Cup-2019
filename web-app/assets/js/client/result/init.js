@@ -105,7 +105,7 @@ async function fetchData(data) {
             body: JSON.stringify({
               session_id: parseInt(window.localStorage.result_session_id, 10),
               child_id:   parseInt(window.localStorage.result_session_child_id, 10),
-              question_id: parseInt(e.target.parentNode.dataset.id, 10)
+              question_id: parseInt(e.target.parentNode.parentNode.dataset.id, 10)
             })
           };
 

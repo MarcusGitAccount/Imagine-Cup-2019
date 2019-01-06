@@ -76,7 +76,7 @@
         document.querySelector('#session-controls').classList.add('hidden');
         document.querySelector('#stop-simulation').classList.remove('hidden');
         document.querySelector('form#new-note').classList.remove('hidden');
-        window.alert(res.result.payload);
+        window.alert('Session started.');
       }
     })
     .catch(handlePromiseErrors);

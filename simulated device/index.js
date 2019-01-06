@@ -6,29 +6,26 @@
 const chalk = require('chalk');
 
 
-var NodeWebcam = require( "node-webcam" );
+// var NodeWebcam = require( "node-webcam" );
+// var opts = {
+//   width: 1280,
+//   height: 720,
+//   quality: 100,
+//   delay: 0,
+//   saveShots: true,
+//   output: "jpeg",
+//   device: false,
+//   callbackReturn: "location",
+//   verbose: false
+
+// };
 
 
- 
-var opts = {
-  width: 1280,
-  height: 720,
-  quality: 100,
-  delay: 0,
-  saveShots: true,
-  output: "jpeg",
-  device: false,
-  callbackReturn: "location",
-  verbose: false
+// //Creates webcam instance
 
-};
+// var Webcam = NodeWebcam.create( opts );
 
-
-//Creates webcam instance
-
-var Webcam = NodeWebcam.create( opts );
-
-Webcam.capture( "test_picture", function( err, data ) {} );
+// Webcam.capture( "test_picture", function( err, data ) {} );
 
 const connectionString = "HostName=MiPiHub.azure-devices.net;DeviceId=Pi_0000;SharedAccessKey=wwZFGxb1+hijvU40/G9PrLr/qPeZLlszKL2XMNezkK4=";
 

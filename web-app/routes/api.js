@@ -278,7 +278,8 @@ module.exports = (app, isAuthenticated, db, io) => {
       return db.sql.query`
         select 
           q.question_body, u.name as createdby,
-          qs.avg_pulse, q.question_id, session_name
+          qs.avg_pulse, q.question_id, session_name,
+          qs.dominant_emotion, qs.dominant_emotion_value
         from questions q
         join users u
           on u.user_id = q.owner_user_id 
@@ -305,7 +306,8 @@ module.exports = (app, isAuthenticated, db, io) => {
       return db.sql.query`
         select 
           q.question_body, u.name as createdby, 
-          qs.avg_pulse, q.question_id, session_name
+          qs.avg_pulse, q.question_id, session_name,
+          qs.dominant_emotion, qs.dominant_emotion_value
         from questions q
         join users u
           on u.user_id = q.owner_user_id 
