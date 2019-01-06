@@ -1,6 +1,7 @@
 'use strict';
 
-const ctx = document.querySelector("#chart").getContext('2d');
+const canvas = document.querySelector("#chart");
+const ctx = canvas.getContext('2d');
 const config = {
   type: 'line',
   data: {
@@ -16,7 +17,19 @@ const config = {
     }]
   }
 };
+
+const container = canvas.parentNode;
+const bounds = container.getBoundingClientRect();
+const width = bounds.width - 30;
+const height = (window.outerHeight / 3) | 0;
+
+canvas.setAttribute('width', width.toString());
+canvas.setAttribute('height', height);
+canvas.setAttribute('title', 'Displaying data aquired during different session times.');
+
 const chart = new Chart(ctx, config);
+chart.render();
+
 const socket = io.connect(window.location.origin);
 
 socket.on('datastream-pulse', data => { 

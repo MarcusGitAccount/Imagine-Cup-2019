@@ -7,20 +7,19 @@
   <title>Session result</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/styles/index.css">
-  <script src="/assets/js/client/error.js"></script>
+  <script src="/assets/js/client/error.js"></script> <!-- Load first to tackle errors. Don't move at the bottom -->
 </head>
 <body class="background-1">
-  <% if (session_id) { %>
-    <script>
-      window.localStorage.setItem('result_session_id', <%- session_id %>);
-    </script>
-  <% } %>
+  <script>
+    window.localStorage.setItem('result_session_id', <%- session_id %>);
+    window.localStorage.setItem('result_session_child_id',  <%- child_id %>);
+  </script>
 
   <% include ../includes/navbar %>
   <% include ../includes/notifications %>
   <% include ../includes/greet %>
 
-  <div class="container">
+  <div class="container" id="loading">
     <div class="row">
       <div class="loading-animation">
         <div class="loading-animation-container">
@@ -38,8 +37,9 @@
   </div>
 
   <div class="container" id="times">
+    <h3>General data about the session</h3>
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-4 col-sm-6">
         <div class="panel panel-default">
           <div class="panel-heading bold">Session name</div>
           <div class="panel-body" id="session_name">
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-4 col-sm-6">
         <div class="panel panel-default">
           <div class="panel-heading bold">Session starting time</div>
           <div class="panel-body" id="session_start">
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-4 col-sm-6">
         <div class="panel panel-default">
           <div class="panel-heading bold">Session ending time</div>
           <div class="panel-body" id="session_end">
@@ -65,7 +65,62 @@
           </div>
         </div>
       </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading bold">Child's name</div>
+          <div class="panel-body" id="session_child">
+            Loading data
+          </div>
+        </div>
+      </div>
+
+        <div class="col-md-4 col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading bold">Created by user</div>
+            <div class="panel-body" id="session_user">
+              Loading data
+            </div>
+          </div>
+        </div>
     </div>
+  </div>
+
+  <div class="container" id="notes">
+    <h3>Notes recored</h3>
+    <ul class="list-group">
+      Loading data
+    </ul>
+  </div>
+
+  <div class="container" id="questions">
+    <h3>Questions asked</h3>
+    <div class="panel panel-default">
+      <div class="panel-heading">Questions</div>
+      <div class="panel-body">Loading data</div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Created by</th>
+            <th>Average pulse</th>
+            <th>Question</th>
+            <th>Session Name</th>
+            <th>Compare</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="container" id="data">
+    <h3>Gathered data during session</h3>
+    <canvas id="chart" width="0" height="0">
+      <p>Your browser doesn't support the canvas element and its functionality.</p>
+    </canvas>
   </div>
 
 <!-- 
@@ -79,5 +134,8 @@
   <script src="/assets/js/libs/moment.min.js"></script>
   <script src="/assets/js/libs/chartjs-plugin-streaming.min.js"></script>
   <script src="/assets/js/client/result/init.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"   integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>

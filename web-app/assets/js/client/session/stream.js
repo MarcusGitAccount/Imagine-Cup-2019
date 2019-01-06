@@ -113,6 +113,15 @@
         e.target.classList.add('hidden');
         window.alert('Session stopped'); // or a more elegant way of displaying user messages?
       }
+      return Promise.resolve('done');
+    })
+    .then(_ => {
+      const {session_id} = body;
+      const anchor = document.createElement('a');
+
+      anchor.setAttribute('target', '_blank');
+      anchor.setAttribute('href', `/app/result/${session_id}`);
+      anchor.click();
     })
     .catch(handlePromiseErrors);
   });

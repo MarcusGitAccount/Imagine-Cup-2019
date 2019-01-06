@@ -4,33 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/styles/index.css">
-  <title>Application</title>
+  <script src="/assets/js/client/error.js"></script> <!-- Load first to tackle errors. Don't move at the bottom -->  <title>Application</title>
   <style>
-    #chart {
-      max-height: 50vh;
-      max-width: 50vw;
+    a:hover {
+      cursor: pointer;
     }
 
     .asked-question-btn,
     .remove-question-btn, 
     .add-question-btn {
-      margin-left: 10px;
+      position: absolute;
+      right: 15px;
     }
 
-    .asked-question-btn:hover,
-    .remove-question-btn:hover, 
-    .add-question-btn:hover {
-      cursor: pointer;
-      color: red;
-      user-select: none;
-      font-size: 17px;
+    .asked-question-btn {
+      right: 75px;
     }
 
-    #questions {
-      margin-top: 10vh;
-      margin-bottom: 10vh;
-      border: 1px solid black;
+
+    #session-questions > li,
+    #available-questions > li {
+      position: relative;
     }
 
     #available-questions {
@@ -44,63 +40,97 @@
   <% include ../includes/notifications %>
   <% include ../includes/greet %>
 
-  <div class="center">
-    <canvas id="chart" width="800" height="500">
+  <div class="container">
+    <canvas id="chart" width="0" height="0">
       <p>Your browser doesn't support the canvas element and its functionality.</p>
     </canvas>
   </div>
 
-  <span id="errors"></span>
   <span id="data"></span>
 
-  <div id="create-session" style="background-color: #e0e0e0">
+  <div class="container" id="create-session">
     <br>
+    <h3>Create a new session</h3>
+
+    <p>During the session the heartrate and emotions of the selected child will be monitored.</p>
+    <p>
+      At the end of the session partial results(about heartrate and overall emotions) around the time at which each question was asked will be computed to give you and idea of how the child performed.
+    </p>
+    <p>Choose a child from the list to monitor his/her pulse and name your session.</p>
+    <br> 
+
     <div id="session-controls">
-      <h3>Create a new session</h3>
-      <p>Choose a child from the list to monitor his/her pulse and name your session.</p>
-      <br> 
-      <select id="select-child"></select>
-      <input type="text" id="session-name" placeholder="Enter session name">
-      <button id="ping-device" title="Ping child's device to see if it works">Ping device</button> 
+      <div class="row">
+        <div class="col-md-2">
+          <select id="select-child"></select>
+        </div>
+        <div class="col-md-7">
+          <input class="form-control" type="text" id="session-name" placeholder="Enter session name">
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-default" id="start-simulation">Start session</button>
+        </div>
+      </div>
+      
+      <br>
+      <div class="row">
+        <div class="col-md-12">
+          <p>It it recommended to first check if the device is connected. To do this just simply ping it.</p>
+        </div>
+        <div class="col-md-2 col-sm-3">
+          <button class="btn btn-default" id="ping-device" title="Ping child's device to see if it works">Ping device</button> 
+        </div>
+        <div class="col-md-5 col-sm-3">
+          <span style="margin-top: -5px">
+            Device status: <span id="session-ping-status" class="badge">unchecked</span>
+          </span>
+        </div>
+      </div>
 
-      <p>It it recommended to first check if the device is connected. To do this just simply ping it.</p>
-      <span>
-        Ping status: <span id="session-ping-status">unchecked.</span>
-      </span>
+      <br>
     </div>
-
-    <button id="start-simulation">Start simulation.</button>
-    <button id="stop-simulation" class="hidden">Stop simulation.</button>
-    <br><br>
+    <br>
+    <button class="btn btn-default hidden" id="stop-simulation" class="hidden">Stop session</button>
   </div>
 
-  <div id="questions">
+  <div id="questions" class="container">
+    <h3>Questions manager</h3>
+    <p>Select what questions will be asked during the session and used to analyze child's telemtry.</p>
+    <p>Create a new question to be asked during the session.</p>
+
     <div id="pre-session">
       <form id="new-question">
-        <label for="new-question">Create a new question to be asked during the session.</label>
-        <input type="text" name="new-question" placeholder="Enter name for question">
-        <input type="submit" value="Create question">
+        <div class="row">
+          <div class="col-md-9">
+            <input class="form-control" type="text" name="new-question" placeholder="Enter name for question">
+          </div>
+          <div class="col-md-3">
+            <input class="btn btn-default" type="submit" value="Create question">
+          </div>
+        </div>
       </form>
       
-      <ul id="available-questions">
+      <ul id="available-questions" class="list-group">
       </ul>
     </div>
 
-    <p>Session questions</p>
-    <ul id="session-questions">
+    <h3>Select session questions</h3>
+    <ul id="session-questions" class="list-group">
 
     </ul>
   </div>
 
-  <form id="new-note" class="hidden">
-    <p>Add a new note.</p>
-    <textarea name="comment" form="new-note" rows="4" cols="50"></textarea>
-    <input type="submit" value="Add note.">
-  </form>
+  <div class="container">
+    <form id="new-note" class="hidden">
+      <h3>Add a new note.</h3>
+      <textarea name="comment" form="new-note" rows="4" cols="50"></textarea>
+      <br>
+      <input type="submit" value="Add note." class="btn btn-default">
+    </form>
+  </div>
   
   <% include ../includes/footer %>
 
-  <script src="/assets/js/client/error.js"></script>
   <script src="/assets/js/libs/chart.bundle.min.js"></script>
   <script src="/assets/js/libs/moment.min.js"></script>
   <script src="/assets/js/libs/chartjs-plugin-streaming.min.js"></script>
@@ -108,5 +138,8 @@
   <script src="/assets/js/client/session/init.js"></script>
   <script src="/assets/js/client/session/stream.js"></script>
   <script src="/assets/js/client/session/chart.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"   integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
