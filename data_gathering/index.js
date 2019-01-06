@@ -35,6 +35,9 @@ const Message = require('azure-iot-device').Message;
 
 const client = DeviceClient.fromConnectionString(connectionString, Mqtt);
 
+const fs = require('fs');
+const path = require('path');
+
 // Timeout created by setInterval
 let intervalLoop = null;
 
@@ -103,23 +106,37 @@ function onPingDevice(request, response) {
 // Send a telemetry message to your hub
 function sendMessage(child_id, session_id) {
   // Simulate telemetry.
-  const message = new Message(JSON.stringify({
-    pulse: (Math.random() * 130) | 0,
-    comment: 'Data sent in development.',
-    data_time: new Date(),
-    child_id,
-    session_id
-  }));
+  const randomFileNo = (Math.random() * 100 + 1) | 0; 
 
-  console.log('Sending message: ' + message.getData());
+  fs.readFile(path.join(__dirname, 'results100', `a${randomFileNo}.json`), 'utf-8', (err ,data) => {
+    if (err)
+      return console.log('Error sending message.');
+      
+      const json = JSON.parse(data);
+      
+    if (!json)
+      return console.log('Error sending message.');
 
-  // Send the message.
-  client.sendEvent(message, function (err) {
-    if (err) {
-      console.error('send error: ' + err.toString());
-    } else {
-      console.log('message sent');
-    }
+    const {emotion} = json[0].faceAttributes
+    const message = new Message(JSON.stringify({
+      pulse: (Math.random() * 130) | 0,
+      comment: 'Data sent in development.',
+      data_time: new Date(),
+      child_id,
+      session_id,
+      ...emotion
+    })); 
+        
+    console.log('Sending message: ' + message.getData());
+    
+    // Send the message.
+    client.sendEvent(message, function (err) {
+      if (err) {
+        console.error('send error: ' + err.toString());
+      } else {
+        console.log('message sent');
+      }
+    });
   });
 }
 

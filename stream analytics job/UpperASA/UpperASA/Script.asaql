@@ -8,9 +8,30 @@
     from
         [RaspPiData]
     group by
-        TumblingWindow(second, 15),
+        TumblingWindow(second, 5),
         comment, session_id, child_id
 )
 
 select * into [IotDataToDBUpper] from DataSelection;
 select * into [IotDataToWebApp]  from DataSelection;
+
+select
+    avg(cast(anger as float))     as  anger, 
+    avg(cast(contempt as float))  as  contempt, 
+    avg(cast(disgust as float))   as  disgust, 
+    avg(cast(fear as float))      as  fear, 
+    avg(cast(happiness as float)) as  happiness, 
+    avg(cast(neutral as float))   as  neutral, 
+    avg(cast(sadness as float))   as  sadness, 
+    avg(cast(surprise as float))  as  surprise,
+    comment,
+    cast(session_id as Bigint) as session_id,
+    cast(child_id as Bigint) as child_id,
+    cast(System.Timestamp as DateTime) as emotion_time
+into
+    [IotDataToEmotionsTable]
+from
+    [RaspPiData]
+group by
+    TumblingWindow(second, 5),
+    comment, session_id, child_id
