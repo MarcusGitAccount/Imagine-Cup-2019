@@ -138,6 +138,10 @@
   background: cyan;
 }
 
-tr {
+tr, th {
   text-overflow: ellipsis;
+}
+
+a:hover {
+  cursor: pointer;
 }

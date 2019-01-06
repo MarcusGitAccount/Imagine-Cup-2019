@@ -90,10 +90,12 @@ async function fetchData(data) {
           <th>${data.avg_pulse}</th>
           <th title="${data.question_body}">${data.question_body}</th>
           <th>${data.session_name}</th>
-          <th class="comp-question" title="Click to compare">compare</th>
+          <th>
+            <a class="comp-question" title="Click to compare">Compare</a>
+          </th>
         `;
         tr.dataset.id = data.question_id;
-        tr.querySelector('.comp-question').addEventListener('click', e => {
+        const compareFunction =  e => {
           const _body = {
             method: 'POST',
             headers: {
@@ -121,18 +123,25 @@ async function fetchData(data) {
                   <th>-</th>
                   <th>${data.createdby}</th>
                   <th>${data.avg_pulse}</th>
-                  <th title="${data.question_body}">${data.question_body}</th>
+                  <th title="${data.question_body}">-</th>
                   <th>${data.session_name}</th>
                   <th>-</th>
                 `;
                 tr.dataset.id = data.question_id;
                 tr.dataset.compared = "true";
                 tr.setAttribute('class', 'compared-to');
-                e.target.parentNode.insertAdjacentElement('afterend', tr);
+                e.target.parentNode.parentNode.insertAdjacentElement('afterend', tr);
               }
+              return Promise.resolve('done');
+            })
+            .then(_ => {
+              e.target.removeEventListener('click', compareFunction, false);
+              e.target.setAttribute('title', 'Question already asked.');
             })
             .catch(handlePromiseErrors);
-        });
+        }
+
+        tr.querySelector('a.comp-question').addEventListener('click', compareFunction, false);
         body.appendChild(tr);
       }
     })
@@ -160,7 +169,7 @@ async function fetchData(data) {
 
       canvas.setAttribute('width', width.toString());
       canvas.setAttribute('height', height);
-      canvas.setAttribute('title', 'Displaying data aquired during different session times.');
+      // canvas.setAttribute('title', 'Displaying data aquired during different session times.');
 
       for (const pair of res.data) {
         const {data_time, pulse} = pair;
