@@ -81,7 +81,7 @@ async function fetchData(data) {
 
       const emotion = (set) => {
         if (!set || !set.dominant_emotion)
-          return 'Not register';
+          return 'Not registered';
         return `${set.dominant_emotion} (${(set.dominant_emotion_value * 100) | 0}%)`
       };
 
