@@ -35,12 +35,12 @@
 }
 
 .background-2 {
-  width: 100%;
-	height: 100vh;
   background: url('/assets/images/balloons.jpg');
-  background-position: center center;
+  background-position: top left;
   background-size: cover;
+  background-repeat: no-repeat;
   background-attachment: fixed;
+  background-blend-mode: saturation;
 }
 
 .bold {
@@ -145,4 +145,13 @@ tr, th {
 
 a:hover {
   cursor: pointer;
+}
+
+footer {
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
+
+footer span:first {
+  margin-right: 10px;
 }

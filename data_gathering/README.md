@@ -1,3 +1,3 @@
-Code to simulate the Iot part of the project during development.
+Create the .exe app
 
-Built upon original Azure Iot-HUB Microsoft samples.
+electron-packager . UpperHardware --platform=win32 --arch=x64

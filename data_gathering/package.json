@@ -1,15 +1,16 @@
 {
   "name": "data_gathering",
   "version": "1.0.0",
-  "description": "Simulated device application in the IoT Hub quickstart cloud-to-device sample",
-  "main": "index.js",
-  "bin": "index.js",
+  "description": "A minimal Electron application",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^4.0.1"
   },
   "dependencies": {
-    "azure-iot-device": "^1.7.1",
-    "azure-iot-device-mqtt": "^1.7.1"
+    "azure-iot-device": "^1.8.3",
+    "azure-iot-device-mqtt": "^1.8.3"
   }
 }
