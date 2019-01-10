@@ -9,15 +9,18 @@
   <link rel="stylesheet" href="/assets/styles/index.css">
   <script src="/assets/js/client/error.js"></script> <!-- Load first to tackle errors. Don't move at the bottom -->
 </head>
-<body>
+<body class="background-3">
 
-  <a href="/auth">Authentication</a>
-  <a href="/app">Application</a>
+  <div class="get-started">
+    <a href="/app" title="Redirect to the application" class="btn btn-default">Get started</a>
+  </div>
 
-  <% include includes/footer %>
+  <div class="darker-footer">
+    <% include includes/footer %>
+  </div>
   <% include includes/notifications %>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"   integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>

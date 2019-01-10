@@ -43,6 +43,43 @@
   background-blend-mode: saturation;
 }
 
+.background-3 {
+  background: url('/assets/images/origami.jpg');
+  background-position: top left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: saturation;
+}
+
+.get-started {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.get-started a,
+.get-started a:hover  {
+  --color: #fff;
+  background: none;
+  border-width: 3px;
+  border-color: var(--color);
+  color: var(--color);
+  font-size: 25px;
+}
+
+.get-started a:hover {
+  font-size: 30px;
+  transition: .2s;
+}
+
+.darker-footer footer > span {
+  color: black;
+  font-weight: 300;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -154,4 +191,10 @@ footer {
 
 footer span:first {
   margin-right: 10px;
+}
+
+.darker-footer footer > a,
+.darker-footer footer > a:hover {
+  color: white !important;
+  font-weight: 300 !important;
 }
