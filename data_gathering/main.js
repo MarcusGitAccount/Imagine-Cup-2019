@@ -9,7 +9,7 @@ const client = DeviceClient.fromConnectionString(connectionString, Mqtt);
 const fs = require('fs');
 const path = require('path');
 
-const sampleFileName = 'sample_1';
+const sampleFileName = 'sample_2';
 const samplePath = path.join(__dirname, 'heartrate', sampleFileName);
 
 let samples = [];

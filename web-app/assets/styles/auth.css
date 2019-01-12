@@ -93,6 +93,10 @@ label {
 }
 
 #auth-container {
-  padding-top: 20vh;
+  padding-top: 15vh;
   min-height: 100vh;
+}
+
+#errors {
+  margin-top: 5vh;
 }

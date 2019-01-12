@@ -78,6 +78,7 @@ server.listen(process.env.PORT || 1337, () => {
 
 getPartitions(EventHubClient)
   .then(async (partitions) => {
+    console.log('Partitions:', ...partitions);
     const onError = (err) => {
       const data = null;
       const error = err;
@@ -96,7 +97,7 @@ getPartitions(EventHubClient)
       const receiveHandler = EventHubClient.receive(id, onMessage, onError, { 
         eventPosition: EventPosition.fromEnqueuedTime(Date.now()) 
       });
-      await receiveHandler.stop();
+      //await receiveHandler.stop();
     }
   })
   .catch((err) => {

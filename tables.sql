@@ -106,7 +106,7 @@ create table notes (
   note_time datetime default getdate(),
   session_id int not null,
   constraint notes_sessions_fk foreign key(session_id)
-    references sessions(session_id)
+    references sessions(session_id) on delete cascade
 );
 
 select 
