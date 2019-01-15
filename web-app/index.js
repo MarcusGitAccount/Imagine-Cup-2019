@@ -103,3 +103,8 @@ getPartitions(EventHubClient)
   .catch((err) => {
     console.log(err);
   });
+
+  process.on('uncaughtException', function (err) {
+    console.log('Error not treated.');
+    console.error(err);
+  });
