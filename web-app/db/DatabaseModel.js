@@ -16,8 +16,8 @@ class DatabaseModel {
     const config = {
       user: process.env.db_ADMIN,
       password: process.env.db_PASSWORD,
-      server: "upperdbserver.database.windows.net",
-      database: "UpperDatabase",
+      server: "upperdb.database.windows.net",
+      database: "UpperDB",
       options: {
         encrypt: true,
       }
