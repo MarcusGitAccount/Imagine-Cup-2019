@@ -1,6 +1,6 @@
 'use strict';
 
-const connectionString = "HostName=MiPiHub.azure-devices.net;DeviceId=Pi_0000;SharedAccessKey=wwZFGxb1+hijvU40/G9PrLr/qPeZLlszKL2XMNezkK4=";
+const connectionString = "HostName=MiBandData.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=qwoUvvYRrA4Zegb3Q+0zv4NCKwRIDC8fDS8fmq5VMVw=";
 const Mqtt = require('azure-iot-device-mqtt').Mqtt;
 const DeviceClient = require('azure-iot-device').Client
 const Message = require('azure-iot-device').Message;
