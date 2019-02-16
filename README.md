@@ -6,6 +6,17 @@ Upper is a tool meant to tackle the issues faced by teachers working with childr
 
 Our project helps educators understand their pupils with special needs by giving them a web app tool to analyse children’s emotion and feedback to different questions during the class.
 
+# Project target
+
+Autism spectrum disorder (ASD) is a developmental disorder that affects communication and behavior. In many cases, it is hard or even almost impossible to communicate with people with ASD and, even if they might be highly intelligent and very talented, due to communication and understanding difficulties children with autism are sometimes easily written off as being incapable and unintelligent. In the process of educating a child with ASD, both parents and teachers face a lot of difficulties. It is almost impossible to get a cue of a child’s emotional state, but even though it might not be easy to see and recognize it, it doesn’t mean that a child isn’t in a state of distress.
+
+Our project aims to introduce and fill out the part the educator is missing when teaching children with autism and that is clear and consistent feedback during the class from the pupils.
+Young children with autism find it really difficult to express themselves(especially those of really young ages like those in kindergarten or in primary school)  both verbally and non-verbally even when they are in a one to one situation with their mentor or educator. Top this with the fact that during the class time there will be present at least couple more kids in the same room with the same disorder and you make it impossible to receive feedback during the time of the class from the kids.
+
+Given the lack of feedback the teachers do not know if their methods have the desired effect and they have a hard time assessing each child’s progress. By using our tool, Upper, we aim to help them reduce the time needed to find out if their methodologies actually work and give them the chance to create tailor made learning plans for each child based on the individual progress
+made during classes.
+
+
 # Description
 
 In the web application interface the teacher can log in to create and start a session to run during
